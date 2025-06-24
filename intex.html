@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tienda de Muebles "Estilo & Espacio"</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header>
+  <h1>Tienda de Muebles "Estilo & Espacio"</h1>
+  <nav>
+    <a href="#inicio">Inicio</a>
+    <a href="#catalogo">Catálogo</a>
+    <a href="#contacto">Contacto</a>
+    <a href="#carrito">Carrito 🛒</a>
+  </nav>
+</header>
+
+<section id="inicio">
+  <h2>"Bienvenido donde el lujo y la calidez familiar se encuentran"</h2>
+  <p>Creamos espacios elegantes pensados para compartir momentos inolvidables en familia. Descubre muebles de alta calidad que combinan distinción, confort y diseño exclusivo, porque tu hogar merece lo mejor./p>
+
+  
+  <div id="slider">
+    <img src="pro2.jpeg" alt="Venta Sillón Rally" class="active" />
+    <img src="pro1.jpeg" alt="Venta Sillón" />
+    <img src="pro.jpeg" alt="Venta But y Sofá" />
+    <div id="slider-controls">
+      <button id="prev">&#10094;</button>
+      <button id="next">&#10095;</button>
+    </div>
+  </div>
+</section>
+
+<section id="catalogo">
+  <h2>Catálogo</h2>
+  <div class="producto" data-nombre="Silla" data-precio="200">
+    <img src="silla.jpeg"" alt="Silla" />
+    <p>Sofá Moderno - $500</p>
+    <button class="agregar-carrito">Agregar al carrito</button>
+  </div>
+  <div class="producto" data-nombre="Comedor" data-precio="450">
+    <img src="Comedor.jpeg" alt="Comedor" />
+    <p>Mesa de Comedor - $300</p>
+    <button class="agregar-carrito">Agregar al carrito</button>
+  </div>
+  <div class="producto" data-nombre="Butacas" data-precio="350">
+    <img src="Butacas.jpeg" alt="Silla" />
+    <p>Set de Sillas - $200</p>
+    <button class="agregar-carrito">Agregar al carrito</button>
+  </div>
+</section>
+
+<section id="carrito">
+  <h3>Carrito de Compras</h3>
+  <ul id="carrito-lista"></ul>
+  <p id="carrito-total">Total: $0</p>
+</section>
+
+<section id="contacto">
+  <h2>Contacto</h2>
+  <form id="form-contacto" onsubmit="return enviarFormulario(event)">
+    <label for="nombre">Nombre completo:</label>
+    <input type="text" id="nombre" name="nombre" required />
+    
+    <label for="email">Correo electrónico:</label>
+    <input type="email" id="email" name="email" required />
+    
+    <label for="mensaje">Mensaje:</label>
+    <textarea id="mensaje" name="mensaje" rows="4" required></textarea>
+    
+    <button type="submit">Enviar</button>
+  </form>
+</section>
+
+<footer>
+  <p>&copy; 2025 Tienda de Muebles "Estilo & Espacio". Todos los derechos reservados.</p>
+</footer>
+
+
+<div id="redes-sociales">
+  <a href="https://wa.me/0984184224" target="_blank" title="WhatsApp">
+    <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp">
+  </a>
+  <a href="https://facebook.com" target="_blank" title="Facebook">
+    <img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook">
+  </a>
+  <a href="https://instagram.com" target="_blank" title="Instagram">
+    <img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram">
+  </a>
+</div>
+
+
+<script>
+  
+  const slides = document.querySelectorAll('#slider img');
+  let currentIndex = 0;
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+
+  function showSlide(index) {
+    slides.forEach((slide, i) => {
+      slide.classList.toggle('active', i === index);
+    });
+  }
+
+  prevBtn.addEventListener('click', () => {
+    currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+    showSlide(currentIndex);
+  });
+  nextBtn.addEventListener('click', () => {
+    currentIndex = (currentIndex + 1) % slides.length;
+    showSlide(currentIndex);
+  });
+
+  
+  setInterval(() => {
+    currentIndex = (currentIndex + 1) % slides.length;
+    showSlide(currentIndex);
+  }, 5000);
+
+  
+  const botonesAgregar = document.querySelectorAll('.agregar-carrito');
+  const carritoLista = document.getElementById('carrito-lista');
+  const carritoTotal = document.getElementById('carrito-total');
+
+  let carrito = [];
+
+  function actualizarCarrito() {
+    carritoLista.innerHTML = '';
+    let total = 0;
+    carrito.forEach((item, index) => {
+      total += item.precio * item.cantidad;
+      const li = document.createElement('li');
+      li.textContent = `${item.nombre} x${item.cantidad} - $${item.precio * item.cantidad}`;
+      
+     
+      const btnEliminar = document.createElement('button');
+      btnEliminar.textContent = 'Eliminar';
+      btnEliminar.style.marginLeft = '10px';
+      btnEliminar.style.backgroundColor = '#d75a5a';
+      btnEliminar.style.color = 'white';
+      btnEliminar.style.border = 'none';
+      btnEliminar.style.borderRadius = '5px';
+      btnEliminar.style.cursor = 'pointer';
+      btnEliminar.addEventListener('click', () => {
+        carrito.splice(index, 1);
+        actualizarCarrito();
+      });
+
+      li.appendChild(btnEliminar);
+      carritoLista.appendChild(li);
+    });
+    carritoTotal.textContent = `Total: $${total}`;
+  }
+
+  botonesAgregar.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const producto = btn.parentElement;
+      const nombre = producto.getAttribute('data-nombre');
+      const precio = parseFloat(producto.getAttribute('data-precio'));
+    
+      const itemExistente = carrito.find(item => item.nombre === nombre);
+      if (itemExistente) {
+        itemExistente.cantidad++;
+      } else {
+        carrito.push({ nombre, precio, cantidad: 1 });
+      }
+      actualizarCarrito();
+    });
+  });
+
+ 
+  function enviarFormulario(event) {
+    event.preventDefault();
+    const nombre = document.getElementById('nombre').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const mensaje = document.getElementById('mensaje').value.trim();
+
+    if (!nombre || !email || !mensaje) {
+      alert('Por favor, completa todos los campos.');
+      return false;
+    }
+   
+    alert(`Gracias por contactarnos, ${nombre}. Responderemos pronto.`);
+    document.getElementById('form-contacto').reset();
+    return false;
+  }
+</script>
+
+</body>
+</html>
